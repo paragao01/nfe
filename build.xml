@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="nfe" default="bin" basedir=".">
+
+  <property environment="env"/>
+  <property name="src.dir" value="./"/>
+  <property name="cls.dir" value="./classes"/>
+  <property name="lib.dir" value="./lib"/>
+  <property name="bin.dir" value="./bin"/>
+  <property name="doc.dir" value="./doc"/>
+  <property name="main.class" value="br.com.debra.nfe.Main"/>
+
+  <path id="classpath">
+    <pathelement location="${cls.dir}"/>
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+
+  <target name="help">
+    <echo>lang = ${env.LANG}</echo>
+    <echo>ant init | compile | bin | run </echo>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${cls.dir}"/>
+    <!--<mkdir dir="${bin.dir}"/>-->
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src.dir}" destdir="${cls.dir}" debug="on" debuglevel="source,lines">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+	
+  <target name="run" depends="compile">
+    <java classname="${main.class}" classpathref="classpath"/>
+  </target>
+
+  <target name="bin" depends="compile">
+    <jar destfile="${bin.dir}/${ant.project.name}.jar" basedir="${cls.dir}">
+      <manifest>
+        <attribute name="Main-class" value="${main.class}"/>
+      	<!--Para acrescentar mais um .jar e so dar um espaco-->
+        <attribute name="Class-Path" value="./lib/woodstox-core-asl-4.2.0.jar ./lib/java-nfe-4.00.13.jar"/>
+      </manifest>
+    </jar>
+  	<copy file="./bin/nfe.jar" todir="./" overwrite="true" verbose="true"/> 
+  	<delete file="./bin/nfe.jar"/>
+    <delete dir="${cls.dir}" quiet="yes"/>
+    <!--<delete dir="${bin.dir}" quiet="yes"/>-->
+  </target>
+	
+</project>
